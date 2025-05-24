@@ -1,10 +1,83 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <title>GitHub Pages テスト</title>
+  <meta charset="UTF-8">
+  <title>学校のルールとマナー 丸バツクイズ</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    body { font-family: "Noto Sans CJK JP", "MS Gothic", sans-serif; background: #f9f9f9; text-align: center; }
+    .quiz-box { background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #ccc; padding: 24px; margin: 24px auto; max-width: 420px; }
+    .question { font-size: 1.4em; margin-bottom: 32px; }
+    .btn { font-size: 1.5em; margin: 18px; padding: 12px 28px; border-radius: 8px; border: none; }
+    .maru { background: #e0f7fa; color: #0288d1; }
+    .batsu { background: #ffebee; color: #d32f2f; }
+    .result { font-size: 1.1em; margin-top: 18px; }
+    .next-btn { margin-top: 28px; font-size: 1.1em; }
+  </style>
 </head>
 <body>
-  <h1>こんにちは！これはGitHub Pagesのテストです。</h1>
+  <div class="quiz-box">
+    <div id="q-num"></div>
+    <div class="question" id="question"></div>
+    <button class="btn maru" onclick="answer(true)">〇</button>
+    <button class="btn batsu" onclick="answer(false)">✕</button>
+    <div class="result" id="result"></div>
+    <button class="next-btn" id="nextBtn" onclick="nextQuestion()" style="display:none;">次の問題へ</button>
+    <div id="score" style="margin-top:24px;"></div>
+  </div>
+  <script>
+    const quiz = [
+      { q: "時間を守ることは大切だ。", a: true },
+      { q: "学校に必要ないおもちゃを持ってきてもいい。", a: false },
+      { q: "教室を出るときは、先生に行き先を伝える。", a: true },
+      { q: "特別教室に行くときは、ひとりで行ってもいい。", a: false },
+      { q: "ろうかでボール遊びをしてもよい。", a: false },
+      { q: "自分以外のロッカーを勝手にあけてはいけない。", a: true },
+      { q: "先生の机や引き出しを勝手に開けてはいけない。", a: true },
+      { q: "友だちにプレゼントや手紙をあげてもよい。", a: false },
+      { q: "授業中は勝手に教室を出てはいけない。", a: true },
+      { q: "友だちが嫌がることをしてもいい。", a: false },
+    ];
+
+    let current = 0, score = 0, answered = false;
+    function showQuestion() {
+      document.getElementById("result").textContent = "";
+      document.getElementById("nextBtn").style.display = "none";
+      document.getElementById("q-num").textContent = `第${current + 1}問 / 全${quiz.length}問`;
+      document.getElementById("question").textContent = quiz[current].q;
+    }
+    function answer(ans) {
+      if (answered) return;
+      answered = true;
+      if (ans === quiz[current].a) {
+        document.getElementById("result").textContent = "正解！";
+        score++;
+      } else {
+        document.getElementById("result").textContent = "不正解！";
+      }
+      document.getElementById("nextBtn").style.display = "inline-block";
+      if (current === quiz.length - 1) {
+        document.getElementById("nextBtn").textContent = "結果を見る";
+      }
+    }
+    function nextQuestion() {
+      if (current < quiz.length - 1) {
+        current++;
+        answered = false;
+        showQuestion();
+      } else {
+        showScore();
+      }
+    }
+    function showScore() {
+      document.querySelector(".question").style.display = "none";
+      document.querySelectorAll(".btn").forEach(btn => btn.style.display = "none");
+      document.getElementById("q-num").style.display = "none";
+      document.getElementById("result").textContent = `あなたの正解数は ${score} / ${quiz.length} です！`;
+      document.getElementById("nextBtn").style.display = "none";
+      document.getElementById("score").innerHTML = "<button onclick='location.reload()'>もう一度遊ぶ</button>";
+    }
+    showQuestion();
+  </script>
 </body>
 </html>
